@@ -298,7 +298,32 @@
 				
 				// Populate Modal Content
 				modalTitle.textContent = btn.dataset.title;
-				modalGithub.href = btn.dataset.github;
+				
+                // GitHub Button Logic
+                if (btn.dataset.github && btn.dataset.github !== "") {
+                    modalGithub.href = btn.dataset.github;
+                    modalGithub.style.display = 'inline-block';
+                    modalGithub.textContent = "View Code on GitHub";
+                } else {
+                    modalGithub.style.display = 'none';
+                }
+
+                // Play Button Logic
+                const playBtn = document.getElementById('modal-play');
+                if (playBtn) playBtn.remove(); // Remove existing play button to avoid duplicates
+
+                if (btn.dataset.play && btn.dataset.play !== "") {
+                    const newPlayBtn = document.createElement('a');
+                    newPlayBtn.id = 'modal-play';
+                    newPlayBtn.href = btn.dataset.play;
+                    newPlayBtn.target = '_blank';
+                    newPlayBtn.className = 'button primary';
+                    newPlayBtn.textContent = 'Play Game';
+                    newPlayBtn.style.marginLeft = '1rem';
+                    
+                    // Insert after GitHub button
+                    modalGithub.parentNode.insertBefore(newPlayBtn, modalGithub.nextSibling);
+                }
 				
                 // Handle Video vs Gallery vs Single Image
                 if (btn.dataset.video === 'gallery') {
@@ -307,6 +332,11 @@
                     modalSingleImage.style.display = 'none';
                     modalGallery.style.display = 'grid';
                     modalGallery.innerHTML = ''; // Clear previous images
+                    
+                    // Reset container for gallery (same as video)
+                    const container = document.getElementById('modal-media-container');
+                    container.style.paddingBottom = '';
+                    container.style.height = '';
                     
                     try {
                         const images = JSON.parse(btn.dataset.gallery);
@@ -339,8 +369,8 @@
                     
                     // Reset container for video
                     const container = document.getElementById('modal-media-container');
-                    container.style.paddingBottom = '56.25%';
-                    container.style.height = '0';
+                    container.style.paddingBottom = '';
+                    container.style.height = '';
                 }
 
 				// Clear and set tags
